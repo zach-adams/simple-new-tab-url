@@ -1,0 +1,49 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Simple New Tab URL Options</title>
+    <script src="./options.js"></script>
+
+    <style>
+        body {
+            margin:0;
+            padding:10px 0 0 20px;
+            background:#2d2d2d;
+            color:#d3d0c8;
+        }
+        a {
+            color:#6699cc;
+        }
+        input[type=text] {
+            display: inline-block;
+            min-width:200px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Simple New Tab URL Options</h1>
+    <p>
+        <label for="url">
+            New Tab URL: <input type="text" id="url" name="url" autofocus/>
+        </label>
+    </p>
+    <p>
+        <label for="sync">
+            Enable Chrome Sync: <input type="checkbox" id="sync" name="sync">
+        </label>
+    </p>
+    <p>
+        <em>Please report any issues on this project's <a href="https://github.com/zach-adams/simple-new-tab-url">Github repo</a></em>
+    </p>
+    <p>
+        <code>
+            Version <span id="version"></span><br>
+            Icon "redo" by Mohamed Riyaz Ali <a href="https://thenounproject.com/term/redo/1175677/" target="_blank">from the Noun Project</a>
+        </code>
+    </p>
+</body>
+</html>

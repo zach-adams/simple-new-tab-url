@@ -1,0 +1,25 @@
+{
+  "manifest_version": 2,
+  "name": "Simple New Tab URL",
+  "short_name": "New Tab URL",
+  "description": "Simply set the URL you want new tabs to load and it'll load it. No fluff.",
+  "version": "1.0.0",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "homepage_url": "https://github.com/zach-adams/simple-new-tab-url",
+  "minimum_chrome_version": "26.0.1428",
+  "options_page": "options.html",
+  "chrome_url_overrides": {
+    "newtab": "redirect.html"
+  },
+  "permissions": [
+    "storage",
+    "file:///*"
+  ],
+  "web_accessible_resources": [
+    "blank.html"
+  ]
+}
