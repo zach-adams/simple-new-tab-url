@@ -14,11 +14,11 @@ function sntu_init() {
 	}
 	sntu_set_version_number();
 
-
-
 	let url_input_el = document.getElementById('url');
 	let sync_input_el = document.getElementById('sync');
 	let light_input_el = document.getElementById('light');
+	let grant_permissions_input_el = document.getElementById('grant_permissions');
+	let permissions_warning_el = document.getElementById('permission_warning');
 	let sync_enabled = true;
 
 	chrome.storage.local.get({'url': '', 'sync': true, 'light': false}, function(local_results) {
@@ -43,11 +43,34 @@ function sntu_init() {
 		}
 	});
 
+	function sntu_open_extension_permissions(event) {
+		chrome.tabs.create({
+			url: 'chrome://extensions/?id=' + chrome.runtime.id
+		});
+	}
+	grant_permissions_input_el.addEventListener('click', sntu_open_extension_permissions);
+
+	function sntu_filesystem_check(url, warning_el) {
+		if(url.trimLeft().startsWith('file://')) {
+			chrome.extension.isAllowedFileSchemeAccess(function(isAllowedAccess) {
+				if (isAllowedAccess) {
+					warning_el.style.display = 'none';
+				} else {
+					warning_el.style.display = 'block';
+				}
+			});
+		} else {
+			warning_el.style.display = 'none';
+		}
+	}
+	sntu_filesystem_check(url_input_el.value, permissions_warning_el);
+
 	function sntu_keyup_save_url(event) {
 		chrome.storage.local.set({'url': event.target.value});
 		if(sync_enabled) {
 			chrome.storage.sync.set({'url': event.target.value});
 		}
+		sntu_filesystem_check(event.target.value, permissions_warning_el);
 	}
 	url_input_el.addEventListener('keyup', key_delay(sntu_keyup_save_url, 200));
 

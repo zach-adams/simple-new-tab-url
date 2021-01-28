@@ -3,7 +3,7 @@
   "name": "Simple New Tab URL",
   "short_name": "New Tab URL",
   "description": "Simply set the URL you want new tabs to load and it'll load it. No fluff.",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",

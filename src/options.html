@@ -16,6 +16,12 @@
             New Tab URL: <input type="text" id="url" name="url" autofocus/>
         </label>
     </p>
+    <div id="permission_warning" style="display: none;">
+        <div class="warning_content">
+            <p class="message">If your URL is a local file then you will have to enable the "Allow access to file URLs" permission for this extension:</p>
+            <p><input type="button" value="Grant Permission" id="grant_permissions"></p>
+        </div>
+    </div>
     <p>
         <label for="light">
             Enable Light Mode: <input type="checkbox" id="light" name="light">
