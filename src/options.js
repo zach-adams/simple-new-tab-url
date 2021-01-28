@@ -18,18 +18,28 @@ function sntu_init() {
 
 	let url_input_el = document.getElementById('url');
 	let sync_input_el = document.getElementById('sync');
+	let light_input_el = document.getElementById('light');
 	let sync_enabled = true;
 
-	chrome.storage.local.get({'url': '', 'sync': true}, function(local_results) {
+	chrome.storage.local.get({'url': '', 'sync': true, 'light': false}, function(local_results) {
 		url_input_el.value = local_results.url;
+		light_input_el.checked = local_results.light;
 		sync_enabled = local_results.sync;
 		sync_input_el.checked = local_results.sync;
 		if(sync_enabled) {
-			chrome.storage.sync.get({'url': ''}, function(syncstorage) {
+			chrome.storage.sync.get({'url': '', 'light': false}, function(syncstorage) {
 				if(syncstorage.url !== '') {
 					url_input_el.value = syncstorage.url;
 				}
+				if(syncstorage.light !== false) {
+					light_input_el.checked = local_results.light;
+				}
 			});
+		}
+		if(local_results.light) {
+			document.body.classList.add("light");
+		} else {
+			document.body.classList.remove("light");
 		}
 	});
 
@@ -43,17 +53,37 @@ function sntu_init() {
 
 	function sntu_save_sync_setting(event) {
 		chrome.storage.local.set({'sync': event.target.checked });
+		if(sync_input_el.checked) {
+			chrome.storage.sync.set({'sync': event.target.checked });
+		}
 	}
-	sync_input_el.addEventListener('change', key_delay(sntu_save_sync_setting, 200));
+	sync_input_el.addEventListener('change', sntu_save_sync_setting);
+
+	function sntu_save_light_setting(event) {
+		chrome.storage.local.set({'light': event.target.checked });
+		if(sync_input_el.checked) {
+			chrome.storage.sync.set({'light': event.target.checked });
+		}
+		if(event.target.checked) {
+			document.body.classList.add("light");
+		} else {
+			document.body.classList.remove("light");
+		}
+	}
+	light_input_el.addEventListener('change', sntu_save_light_setting);
 
 
 	window.addEventListener("beforeunload", function(e){
 		chrome.storage.local.set({
 			'sync': sync_input_el.checked,
+			'light': light_input_el.checked,
 			'url': url_input_el.value
 		});
 		if(sync_input_el.checked) {
-			chrome.storage.sync.set({ 'url': url_input_el.value });
+			chrome.storage.sync.set({ 
+				'url': url_input_el.value,
+				'light': light_input_el.checked
+			});
 		}
 	}, false);
 

@@ -1,4 +1,7 @@
-chrome.storage.local.get({'url': '', 'sync': true}, function(localstorage) {
+chrome.storage.local.get({'url': '', 'sync': true, 'light': false}, function(localstorage) {
+    if(localstorage.light === true) {
+        document.body.classList.add("light");
+    }
 	if(localstorage.sync === true) {
 		chrome.storage.sync.get({'url':''}, function(syncedstorage) {
 			if (syncedstorage.url === '') return chrome.runtime.openOptionsPage();
