@@ -17,13 +17,15 @@ function sntu_init() {
 	let url_input_el = document.getElementById('url');
 	let sync_input_el = document.getElementById('sync');
 	let light_input_el = document.getElementById('light');
+	let highlight_input_el = document.getElementById('highlight');
 	let grant_permissions_input_el = document.getElementById('grant_permissions');
 	let permissions_warning_el = document.getElementById('permission_warning');
 	let sync_enabled = true;
 
-	chrome.storage.local.get({'url': '', 'sync': true, 'light': false}, function(local_results) {
+	chrome.storage.local.get({'url': '', 'sync': true, 'light': false, 'highlight': false}, function(local_results) {
 		url_input_el.value = local_results.url;
 		light_input_el.checked = local_results.light;
+		highlight_input_el.checked = local_results.highlight;
 		sync_enabled = local_results.sync;
 		sync_input_el.checked = local_results.sync;
 		if(sync_enabled) {
@@ -33,6 +35,9 @@ function sntu_init() {
 				}
 				if(syncstorage.light !== false) {
 					light_input_el.checked = local_results.light;
+				}
+				if(syncstorage.highlight !== false) {
+					highlight_input_el.checked = local_results.highlight;
 				}
 			});
 		}
@@ -95,17 +100,27 @@ function sntu_init() {
 	}
 	light_input_el.addEventListener('change', sntu_save_light_setting);
 
+	function sntu_save_highlight_setting(event) {
+		chrome.storage.local.set({'highlight': event.target.checked });
+		if(sync_input_el.checked) {
+			chrome.storage.sync.set({'highlight': event.target.checked });
+		}
+	}
+	highlight_input_el.addEventListener('change', sntu_save_highlight_setting);
+
 
 	window.addEventListener("beforeunload", function(e){
 		chrome.storage.local.set({
 			'sync': sync_input_el.checked,
 			'light': light_input_el.checked,
-			'url': url_input_el.value
+			'highlight': highlight_input_el.checked,
+			'url': url_input_el.value,
 		});
 		if(sync_input_el.checked) {
-			chrome.storage.sync.set({ 
+			chrome.storage.sync.set({
 				'url': url_input_el.value,
-				'light': light_input_el.checked
+				'light': light_input_el.checked,
+				'highlight': highlight_input_el.checked,
 			});
 		}
 	}, false);
