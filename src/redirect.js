@@ -8,19 +8,41 @@ function sntu_init() {
 			}
 		});
 	}
-	chrome.storage.local.get({'url': '', 'sync': true, 'light': false}, function(localstorage) {
+	chrome.storage.local.get({'url': '', 'sync': true, 'light': false, 'highlight': false}, function(localstorage) {
 	    if(localstorage.light === true) {
 	        document.body.classList.add("light");
 	    }
 		if(localstorage.sync === true) {
-			chrome.storage.sync.get({'url':''}, function(syncedstorage) {
+			chrome.storage.sync.get({'url':'', 'highlight': false}, function(syncedstorage) {
 				if (syncedstorage.url === '') return chrome.runtime.openOptionsPage();
 				if(syncedstorage.url.trimLeft().startsWith('file://')) return sntu_filesystem_check(syncedstorage.url, document.getElementById('permission_warning'));
+				if(syncedstorage.highlight) {
+					return chrome.tabs.query({
+						currentWindow: true,
+						active: true
+					}, function (tab) {
+						chrome.tabs.update(tab.id, {
+							url: syncedstorage.url,
+							highlighted: true
+						});
+					});
+				}
 				return document.location = syncedstorage.url;
 			});
 		} else {
 			if (localstorage.url === '') return chrome.runtime.openOptionsPage();
-			if(syncedstorage.url.trimLeft().startsWith('file://')) return sntu_filesystem_check(syncedstorage.url, document.getElementById('permission_warning'));
+			if(localstorage.url.trimLeft().startsWith('file://')) return sntu_filesystem_check(localstorage.url, document.getElementById('permission_warning'));
+			if(localstorage.highlight) {
+				return chrome.tabs.query({
+					currentWindow: true,
+					active: true
+				}, function (tab) {
+					chrome.tabs.update(tab.id, {
+						url: localstorage.url,
+						highlighted: true
+					});
+				});
+			}
 			return document.location = localstorage.url;
 		}
 	});
