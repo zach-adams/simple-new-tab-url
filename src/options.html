@@ -1,51 +1,106 @@
 <!doctype html>
-
 <html lang="en">
 <head>
     <meta charset="utf-8">
-
-    <title>Simple New Tab URL Options</title>
-    <script src="./options.js"></script>
-    <link rel="stylesheet" type="text/css" href="./style.css">
+    <title>Super New Tab - Options</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .about {
+            background: #e8f4fd;
+            color: #1a3a5d;
+            border: 1px solid #b6e0fe;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+        .about a {
+            color: #0078d4;
+            text-decoration: underline;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="url"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        button {
+            background: #0078d4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #106ebe;
+        }
+        .status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
-
-<body class="options">
-    <h1>Simple New Tab URL Options</h1>
-    <p>
-        <label for="url">
-            New Tab URL: <input type="text" id="url" name="url" autofocus/>
-        </label>
-    </p>
-    <div id="permission_warning" style="display: none;">
-        <div class="warning_content">
-            <p class="message">If your URL is a local file then you will have to enable the "Allow access to file URLs" permission for this extension:</p>
-            <p><input type="button" value="Grant Permission" id="grant_permissions"></p>
+<body>
+    <div class="container">
+        <h1>Super New Tab</h1>
+        <div class="about">
+            <strong>Why does this extension exist?</strong><br>
+            Edge (and Chrome) do not allow you to customize the new tab URL for "security reasons" which is really lame. <br>
+            <b>Super New Tab</b> provides a simple toolbar button to open your favorite home page or local file in a new tab.<br>
+            Simply click the toolbar button and a new tab will open with your desired home page or local file!<br>
+            <br>
+            Support development: Buy me a ☕ <a href="https://buymeacoffee.com/davistinkers" target="_blank">buymeacoffee.com/davistinkers</a><br>
+            GitHub: <a href="https://github.com/davis-tinkers/Super-New-Tab" target="_blank">github.com/davis-tinkers/Super-New-Tab</a>
         </div>
+        <div class="warning">
+            <strong>Note:</strong> Local file URLs (<code>file:///</code>) may not work due to browser security restrictions. If you use a local file:
+            <ul>
+                <li>Make sure the file path has <b>no spaces</b> (try renaming folders/files if needed).</li>
+                <li>Enable the extension's <b>"Allow access to file URLs"</b> permission in Edge's extension settings.</li>
+            </ul>
+            For best results, use a web page URL (e.g., <code>https://zombo.com/</code>).
+        </div>
+        <label for="homepage-url">Home Page URL:</label>
+        <input type="url" id="homepage-url" placeholder="https://zombo.com/">
+        <button id="save">Save Settings</button>
+        <div id="status" class="status"></div>
     </div>
-    <p>
-        <label for="highlight">
-            Enable auto-highlight/select URL on new tab load: <input type="checkbox" id="highlight" name="highlight">
-        </label>
-    </p>
-    <p>
-        <label for="light">
-            Enable Light Mode: <input type="checkbox" id="light" name="light">
-        </label>
-    </p>
-    <p>
-        <label for="sync">
-            Enable Chrome Sync: <input type="checkbox" id="sync" name="sync">
-        </label>
-    </p>
-    <hr>
-    <p>
-        <em>Please report any issues on this project's <a href="https://github.com/zach-adams/simple-new-tab-url">Github repo</a></em>
-    </p>
-    <p>
-        <code>
-            Version <span id="version"></span><br>
-            Icon "redo" by Mohamed Riyaz Ali <a href="https://thenounproject.com/term/redo/1175677/" target="_blank">from the Noun Project</a>
-        </code>
-    </p>
+    <script src="options.js"></script>
 </body>
 </html>

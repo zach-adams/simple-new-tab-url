@@ -3,14 +3,15 @@ body {
     padding:10px 0 0 20px;
     font-size: 14px;
 }
-#permission_warning .warning_content {
-    border: 2px solid #E5CC88;
+.redirecting .redirect_content {
+    border: 2px solid #6699cc;
     border-radius: 3px;
-    padding: 5px;
+    padding: 15px;
     display: inline-block;
     clear: both;
+    background: rgba(102, 153, 204, 0.1);
 }
-#permission_warning .warning_content p {
+.redirecting .redirect_content p {
     margin: 3px 0;
 }
 a {
