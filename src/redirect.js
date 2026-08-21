@@ -1,4 +1,33 @@
 function sntu_init() {
+	function sntu_highlight_redirect(url) {
+		// Target THIS page's own tab. The previous code passed the array returned
+		// by chrome.tabs.query() straight into chrome.tabs.update(), so `tab.id`
+		// was undefined and the update fell through to its default target -- the
+		// active tab of the current window. When the new tab page loads in a
+		// background tab, that is an unrelated tab the user is currently reading,
+		// which then gets navigated away.
+		return chrome.tabs.getCurrent(function (own) {
+			if (!own) {
+				// No tab context (shouldn't happen for an extension page); fall back
+				// to a self-navigation, which can only ever affect this page.
+				document.location = url;
+				return;
+			}
+			if (!own.active) {
+				// This new tab page is in a background tab -- something opened it
+				// without focusing it (browser automation, a middle click, a link
+				// opened in the background). Highlighting would drag the user over
+				// to a tab they did not choose to look at, so navigate in place.
+				document.location = url;
+				return;
+			}
+			chrome.tabs.update(own.id, {
+				url: url,
+				highlighted: true
+			});
+		});
+	}
+
 	function sntu_filesystem_check(url, warning_el) {
 		chrome.extension.isAllowedFileSchemeAccess(function(isAllowedAccess) {
 			if (isAllowedAccess) {
@@ -17,15 +46,7 @@ function sntu_init() {
 				if (syncedstorage.url === '') return chrome.runtime.openOptionsPage();
 				if(syncedstorage.url.trimLeft().startsWith('file://')) return sntu_filesystem_check(syncedstorage.url, document.getElementById('permission_warning'));
 				if(syncedstorage.highlight) {
-					return chrome.tabs.query({
-						currentWindow: true,
-						active: true
-					}, function (tab) {
-						chrome.tabs.update(tab.id, {
-							url: syncedstorage.url,
-							highlighted: true
-						});
-					});
+					return sntu_highlight_redirect(syncedstorage.url);
 				}
 				return document.location = syncedstorage.url;
 			});
@@ -33,15 +54,7 @@ function sntu_init() {
 			if (localstorage.url === '') return chrome.runtime.openOptionsPage();
 			if(localstorage.url.trimLeft().startsWith('file://')) return sntu_filesystem_check(localstorage.url, document.getElementById('permission_warning'));
 			if(localstorage.highlight) {
-				return chrome.tabs.query({
-					currentWindow: true,
-					active: true
-				}, function (tab) {
-					chrome.tabs.update(tab.id, {
-						url: localstorage.url,
-						highlighted: true
-					});
-				});
+				return sntu_highlight_redirect(localstorage.url);
 			}
 			return document.location = localstorage.url;
 		}
