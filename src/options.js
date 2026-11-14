@@ -29,16 +29,14 @@ function sntu_init() {
 		sync_enabled = local_results.sync;
 		sync_input_el.checked = local_results.sync;
 		if(sync_enabled) {
-			chrome.storage.sync.get({'url': '', 'light': false}, function(syncstorage) {
+			chrome.storage.sync.get({'url': '', 'light': local_results.light, 'highlight': local_results.highlight}, function(syncstorage) {
 				if(syncstorage.url !== '') {
 					url_input_el.value = syncstorage.url;
 				}
-				if(syncstorage.light !== false) {
-					light_input_el.checked = local_results.light;
-				}
-				if(syncstorage.highlight !== false) {
-					highlight_input_el.checked = local_results.highlight;
-				}
+				light_input_el.checked = syncstorage.light;
+				highlight_input_el.checked = syncstorage.highlight;
+				document.body.classList.toggle('light', syncstorage.light);
+				sntu_filesystem_check(url_input_el.value, permissions_warning_el);
 			});
 		}
 		if(local_results.light) {
@@ -46,6 +44,7 @@ function sntu_init() {
 		} else {
 			document.body.classList.remove("light");
 		}
+		sntu_filesystem_check(url_input_el.value, permissions_warning_el);
 	});
 
 	function sntu_open_extension_permissions(event) {
@@ -68,7 +67,6 @@ function sntu_init() {
 			warning_el.style.display = 'none';
 		}
 	}
-	sntu_filesystem_check(url_input_el.value, permissions_warning_el);
 
 	function sntu_keyup_save_url(event) {
 		chrome.storage.local.set({'url': event.target.value});
@@ -80,9 +78,14 @@ function sntu_init() {
 	url_input_el.addEventListener('keyup', key_delay(sntu_keyup_save_url, 200));
 
 	function sntu_save_sync_setting(event) {
+		sync_enabled = event.target.checked;
 		chrome.storage.local.set({'sync': event.target.checked });
 		if(sync_input_el.checked) {
-			chrome.storage.sync.set({'sync': event.target.checked });
+			chrome.storage.sync.set({
+				'url': url_input_el.value,
+				'light': light_input_el.checked,
+				'highlight': highlight_input_el.checked,
+			});
 		}
 	}
 	sync_input_el.addEventListener('change', sntu_save_sync_setting);
